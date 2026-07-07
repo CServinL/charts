@@ -2,5 +2,5 @@ apiVersion: v2
 name: home-assistant
 description: A minimal Home Assistant chart with no unwanted dependencies (no forced Postgres/CNPG, no bundled zigbee2mqtt/nats)
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "2026.7"
