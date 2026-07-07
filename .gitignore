@@ -1,0 +1,4 @@
+.cr-release-packages/
+.cr-index/
+*.tgz
+.DS_Store
