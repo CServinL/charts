@@ -154,6 +154,7 @@ helm search repo cservinl
 <h2 id="charts_1">Charts</h2>
 <ul>
 <li><strong>home-assistant</strong> — minimal Home Assistant chart, no forced dependencies (no Postgres/CNPG requirement, no bundled zigbee2mqtt/nats).</li>
+<li><strong>matter-server</strong> — Matter.js Server, a companion WebSocket service for Home Assistant's Matter integration. Drop-in replacement for the deprecated <code>python-matter-server</code> (no longer maintained).</li>
 </ul>
 <h2 id="releasing">Releasing</h2>
 <p>Publishing is automated via <code>.github/workflows/release.yml</code> (<code>helm/chart-releaser-action</code>) — bump the chart's <code>version</code> in its <code>Chart.yaml</code> and push to <code>main</code>; it packages, creates a GitHub Release, and updates <code>index.yaml</code> on the <code>gh-pages</code> branch automatically.</p>
