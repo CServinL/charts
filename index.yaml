@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  home-assistant:
+  - apiVersion: v2
+    appVersion: "2026.7"
+    created: "2026-07-07T21:04:50.747563995Z"
+    description: A minimal Home Assistant chart with no unwanted dependencies (no
+      forced Postgres/CNPG, no bundled zigbee2mqtt/nats)
+    digest: 4f3f94c86d1e16170ed5f3d314aea525671126b35f90acc8933f30be3dbb1d43
+    name: home-assistant
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/home-assistant-0.1.1/home-assistant-0.1.1.tgz
+    version: 0.1.1
+generated: "2026-07-07T21:04:50.747573342Z"
