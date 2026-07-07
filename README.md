@@ -13,3 +13,5 @@ helm search repo cservinl
 ## Charts
 
 - **home-assistant** — minimal Home Assistant chart, no forced dependencies (no Postgres/CNPG requirement, no bundled zigbee2mqtt/nats).
+
+---
