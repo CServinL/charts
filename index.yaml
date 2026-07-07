@@ -12,4 +12,16 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/home-assistant-0.1.1/home-assistant-0.1.1.tgz
     version: 0.1.1
-generated: "2026-07-07T21:04:50.747573342Z"
+  matter-server:
+  - apiVersion: v2
+    appVersion: stable
+    created: "2026-07-07T21:44:20.44099044Z"
+    description: Matter.js Server — companion WebSocket service for Home Assistant's
+      Matter integration (drop-in replacement for the deprecated python-matter-server)
+    digest: cf610531442c13e123dcfd42342a9b81c06958a4d970cf8d7d709421687c4279
+    name: matter-server
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/matter-server-0.1.0/matter-server-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-07-07T21:44:20.440995489Z"
