@@ -23,6 +23,7 @@ Charts will then be browsable/installable under Apps → Charts.
 ## Charts
 
 - **home-assistant** — minimal Home Assistant chart, no forced dependencies (no Postgres/CNPG requirement, no bundled zigbee2mqtt/nats).
+- **matter-server** — Matter.js Server, a companion WebSocket service for Home Assistant's Matter integration. Drop-in replacement for the deprecated `python-matter-server` (no longer maintained).
 
 ## Releasing
 

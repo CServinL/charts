@@ -1,0 +1,17 @@
+image:
+  repository: ghcr.io/matter-js/matterjs-server
+  tag: stable
+
+# hostNetwork is required for mDNS/Matter device discovery and commissioning.
+hostNetwork: true
+
+persistence:
+  size: 1Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

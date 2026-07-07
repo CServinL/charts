@@ -1,0 +1,6 @@
+apiVersion: v2
+name: matter-server
+description: Matter.js Server — companion WebSocket service for Home Assistant's Matter integration (drop-in replacement for the deprecated python-matter-server)
+type: application
+version: 0.1.0
+appVersion: "stable"
