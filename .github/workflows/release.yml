@@ -28,3 +28,49 @@ jobs:
         uses: helm/chart-releaser-action@v1
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  docs:
+    needs: release
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install docu-craft
+        run: pip install docu-craft
+
+      - name: Render README to styled HTML
+        run: |
+          python -c "
+          import docu_craft
+          doc = docu_craft.Document('README.md')
+          doc.apply_theme('tech-doc')
+          doc.render(format='html', output='index.html')
+          "
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v6
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Publish rendered page
+        run: |
+          cp index.html gh-pages/index.html
+          cd gh-pages
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes to index.html"
+          else
+            git add index.html
+            git commit -m "Update rendered docs page"
+            git push
+          fi
