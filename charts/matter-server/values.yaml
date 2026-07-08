@@ -5,6 +5,13 @@ image:
 # hostNetwork is required for mDNS/Matter device discovery and commissioning.
 hostNetwork: true
 
+# Restrict matter.js to a single interface. Without this, hostNetwork exposes
+# every host interface (including any WireGuard tunnel) to matter.js, which
+# tries to send mDNS multicast on all of them — a tunnel interface can't carry
+# multicast and errors out, which can interfere with discovery on the interface
+# that actually matters. Set to the interface your Matter devices are actually on.
+primaryInterface: ""
+
 persistence:
   size: 1Gi
 

@@ -19,6 +19,11 @@ spec:
       containers:
         - name: matter-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- if .Values.primaryInterface }}
+          env:
+            - name: PRIMARY_INTERFACE
+              value: {{ .Values.primaryInterface | quote }}
+          {{- end }}
           volumeMounts:
             - name: data
               mountPath: /data
