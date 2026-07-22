@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate  # single PVC (RWO) — never run two pods against it at once
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      initContainers:
+        # Clone on first run, pull on every subsequent pod (re)start — this is
+        # the "git pull to update" half of dev mode. The other half (actually
+        # picking up the change) is a pod restart, since the venv/import
+        # caches are process-local — see chart README.
+        - name: git-sync
+          image: alpine/git:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              if [ -d /data/repo/.git ]; then
+                cd /data/repo && git pull
+              else
+                git clone --branch {{ .Values.git.branch }} {{ .Values.git.repo }} /data/repo
+              fi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+        - name: pip-install
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              [ -d /data/venv ] || python -m venv /data/venv
+              /data/venv/bin/pip install -e "/data/repo[dev]"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      containers:
+        - name: prisma
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["/data/venv/bin/prisma", "serve"]
+          workingDir: /data/repo
+          env:
+            - name: HOME
+              value: /data
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.openrouterSecretName }}
+                  key: OPENROUTER_API_KEY
+          ports:
+            - name: api
+              containerPort: {{ .Values.service.apiPort }}
+            - name: ui
+              containerPort: {{ .Values.service.uiPort }}
+            - name: chroma
+              containerPort: {{ .Values.service.chromaPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-data
