@@ -1,0 +1,44 @@
+image:
+  # Generic Python base — dev mode has no baked Prisma image. An initContainer
+  # clones/pulls the repo and does `pip install -e .` into a persisted venv on
+  # every pod start, so code updates are just "git pull, then restart the pod"
+  # — no image build/push step.
+  repository: python
+  tag: "3.12-slim"
+
+git:
+  repo: https://github.com/CServinL/prisma.git
+  branch: main
+
+persistence:
+  # Holds the cloned repo + venv (rebuilt fast if unchanged) + vault + config.
+  # Longhorn is plain/unencrypted here on purpose — vault encryption is a
+  # deferred Prisma-side feature (gocryptfs + unlock-over-LAN), not solved at
+  # the storage layer. See prisma's TODO.md "Deferred feature: vault unlock
+  # over LAN instead of an at-rest key".
+  storageClassName: longhorn
+  size: 20Gi
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 4Gi
+
+service:
+  apiPort: 8765
+  uiPort: 8766
+  chromaPort: 8767
+
+# Name of a pre-created Secret (not managed by this chart) holding the
+# OpenRouter API key, e.g.:
+#   kubectl create secret generic prisma-openrouter -n prisma \
+#     --from-literal=OPENROUTER_API_KEY=sk-or-...
+openrouterSecretName: prisma-openrouter
+
+ingress:
+  enabled: false
+  host: prisma.forge.internal
+  clusterIssuer: forge-ca
