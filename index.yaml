@@ -35,4 +35,17 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/matter-server-0.1.0/matter-server-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-08T01:57:09.552673418Z"
+  prisma-dev:
+  - apiVersion: v2
+    appVersion: dev
+    created: "2026-07-22T06:52:15.118857104Z"
+    description: Prisma — Research Library Assistant (dev-mode deployment, editable
+      install from source, git-pull to update)
+    digest: 6cb7c91ad7609776999013a85442b9c3bd6e40818af3e740d950fa1a2b790bbf
+    icon: https://raw.githubusercontent.com/CServinL/prisma/main/ui/static/prisma-icon.svg
+    name: prisma-dev
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.0/prisma-dev-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-07-22T06:52:15.11886455Z"
