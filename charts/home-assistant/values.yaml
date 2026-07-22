@@ -16,3 +16,11 @@ resources:
   limits:
     cpu: "1"
     memory: 1Gi
+
+service:
+  port: 8123
+
+ingress:
+  enabled: true
+  host: homeassistant.forge.internal
+  clusterIssuer: forge-ca
