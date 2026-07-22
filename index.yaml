@@ -3,6 +3,17 @@ entries:
   home-assistant:
   - apiVersion: v2
     appVersion: "2026.7"
+    created: "2026-07-22T22:05:30.196146778Z"
+    description: A minimal Home Assistant chart with no unwanted dependencies (no
+      forced Postgres/CNPG, no bundled zigbee2mqtt/nats)
+    digest: f3fb22e9e094d0fc8bd281d7a8771e09648908ffd93053baef449d01028fef11
+    name: home-assistant
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/home-assistant-0.1.4/home-assistant-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: "2026.7"
     created: "2026-07-07T21:04:50.747563995Z"
     description: A minimal Home Assistant chart with no unwanted dependencies (no
       forced Postgres/CNPG, no bundled zigbee2mqtt/nats)
@@ -35,6 +46,18 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/matter-server-0.1.0/matter-server-0.1.0.tgz
     version: 0.1.0
+  pihole:
+  - apiVersion: v2
+    appVersion: 2026.07.2
+    created: "2026-07-22T22:05:30.328572728Z"
+    description: Pi-hole network-wide ad blocker + local DNS, with Ingress/TLS support
+      (forge-ca) that the upstream community chart doesn't provide
+    digest: a758bcc9fe89373461fce3a7150fec97c88a983056fbac9b370855b2a7427935
+    name: pihole
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/pihole-0.1.2/pihole-0.1.2.tgz
+    version: 0.1.2
   prisma-dev:
   - apiVersion: v2
     appVersion: dev
@@ -60,4 +83,4 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.0/prisma-dev-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-22T22:02:48.07396553Z"
+generated: "2026-07-22T22:05:30.328591246Z"
