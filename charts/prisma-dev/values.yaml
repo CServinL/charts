@@ -38,6 +38,17 @@ service:
 #     --from-literal=OPENROUTER_API_KEY=sk-or-...
 openrouterSecretName: prisma-openrouter
 
+openrouter:
+  # Cheap model by default — swap once you've picked one deliberately (see
+  # TODO.md's OpenRouter model discussion for kg extraction/chat).
+  chatModel: "openai/gpt-4o-mini"
+
+ollama:
+  # Not deployed yet as part of this chart — placeholder host:port for a
+  # separate Ollama instance (Forge's own 680M, CPU-only, or wherever it ends
+  # up running). Update once that's actually stood up.
+  host: "ollama.default.svc.cluster.local:11434"
+
 ingress:
   enabled: false
   host: prisma.forge.internal

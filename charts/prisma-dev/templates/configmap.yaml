@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  config.yaml: |
+    sources:
+      zotero:
+        enabled: true
+        mode: "web"             # no local_api_url — server is headless, Web API only
+        api_key: ""             # set after first deploy: zotero.org/settings/keys
+        library_id: ""
+        library_type: "user"
+        disable_writes_when_offline: true
+        auto_save_papers: true
+        auto_save_collection: "Prisma Discoveries"
+
+    search:
+      default_limit: 10
+      sources: ['semanticscholar', 'arxiv', 'openlibrary', 'googlebooks', 'zotero']
+      prefer_high_quality: true
+      min_confidence_score: 0.3
+
+    # Analysis LLM (stream relevance gate, "prisma review") — still Ollama-only
+    # in the current code (no OpenRouter support here yet, unlike chat/KG).
+    llm:
+      provider: 'ollama'
+      model: 'qwen2.5:7b-32k'
+      host: '{{ .Values.ollama.host }}'
+
+    # Chat backend — OpenRouter (ADR-014, openai-SDK-compatible). api_key comes
+    # from the OPENROUTER_API_KEY env var (see deployment.yaml), not this file.
+    chat:
+      provider: 'openrouter'
+      model: '{{ .Values.openrouter.chatModel }}'
+
+    # ChromaDB embeddings — still Ollama-only (nomic-embed-text has no
+    # OpenRouter equivalent; OpenRouter doesn't serve embedding models).
+    retrieval:
+      embedding_model: 'nomic-embed-text'
+      ollama_base_url: 'http://{{ .Values.ollama.host }}'
+      chroma_port: {{ .Values.service.chromaPort }}
+
+    output:
+      directory: './outputs'
+      format: 'markdown'
