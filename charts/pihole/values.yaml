@@ -1,0 +1,40 @@
+image:
+  repository: pihole/pihole
+  tag: "2026.07.2"
+
+hostname: forge-pihole
+
+adminPassword: forge
+
+dns:
+  upstreams: "8.8.8.8;8.8.4.4"
+
+# Query history retention, in days. 0 disables the query database entirely —
+# ad-blocking still works identically, you just lose the Query Log and the
+# historical dashboard graphs (gravity.db / blocklists are unaffected).
+maxDBdays: 0
+
+persistence:
+  size: 500Mi
+  storageClassName: local-path
+  # Set to an existing PV name to statically bind to it (migration from the
+  # upstream community chart) instead of dynamically provisioning a fresh,
+  # empty volume. Leave blank for a brand-new install.
+  existingVolumeName: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+service:
+  webHttpPort: 8080
+  webHttpsPort: 8443
+
+ingress:
+  enabled: true
+  host: pihole.forge.internal
+  clusterIssuer: forge-ca
