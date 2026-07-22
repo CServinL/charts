@@ -2,5 +2,5 @@ apiVersion: v2
 name: pihole
 description: Pi-hole network-wide ad blocker + local DNS, with Ingress/TLS support (forge-ca) that the upstream community chart doesn't provide
 type: application
-version: 0.1.1
+version: 0.1.2
 appVersion: "2026.07.2"
