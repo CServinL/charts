@@ -5,4 +5,9 @@ metadata:
 data:
   02-custom.conf: |
     addn-hosts=/etc/addn-hosts
+    # Local/custom DNS records (forge.internal, pihole.forge.internal, etc.) default
+    # to TTL=0 in dnsmasq — no caching at all, so any brief Pi-hole restart breaks
+    # resolution for every client instantly. These IPs are static in this homelab,
+    # so a longer TTL costs nothing and buys resilience against short blips.
+    local-ttl=300
   addn-hosts: |

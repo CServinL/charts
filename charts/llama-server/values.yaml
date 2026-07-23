@@ -1,12 +1,18 @@
 # llama-server runs natively on the host (systemd service, /opt/llama.cpp) instead
 # of as a pod, because it needs direct access to the host's Vulkan render device
 # (/dev/dri) for GPU inference on the iGPU — passing that through to a k3s pod
-# is unreliable for AMD iGPUs. This chart only creates the Service + Endpoints
-# that expose the host process to the cluster at a stable in-cluster DNS name,
-# the same pattern used for the laptop's Ollama instance.
+# is unreliable for AMD iGPUs. This chart only creates the Service + EndpointSlice
+# that expose the host process to the cluster at a stable in-cluster DNS name
+# (the same pattern used for the laptop's Ollama instance), plus an optional
+# Ingress/TLS for access from outside the cluster.
 host:
   ip: "192.168.100.100"
   port: 8090
 
 service:
   port: 8090
+
+ingress:
+  enabled: true
+  host: llama.forge.internal
+  clusterIssuer: forge-ca
