@@ -26,6 +26,18 @@ entries:
   llama-server:
   - apiVersion: v2
     appVersion: b10107
+    created: "2026-07-23T17:35:09.745812661Z"
+    description: Pointer chart for the llama.cpp server (Vulkan backend) running as
+      a native systemd service on the host — not a pod, since it needs direct access
+      to the host's Vulkan/render device for GPU inference
+    digest: 1676ead2f5990c41e8049a176834ef15c329c0357c1c04484d6ecbd9adea3e39
+    name: llama-server
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/llama-server-0.1.1/llama-server-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: b10107
     created: "2026-07-23T17:13:07.013787772Z"
     description: Pointer chart for the llama.cpp server (Vulkan backend) running as
       a native systemd service on the host — not a pod, since it needs direct access
@@ -62,6 +74,17 @@ entries:
   pihole:
   - apiVersion: v2
     appVersion: 2026.07.2
+    created: "2026-07-23T17:35:09.873090603Z"
+    description: Pi-hole network-wide ad blocker + local DNS, with Ingress/TLS support
+      (forge-ca) that the upstream community chart doesn't provide
+    digest: 64be34da5026fd560b8d098e0cce022ed7744eda4e5c0b86de6f7cb9f7af1faf
+    name: pihole
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/pihole-0.1.3/pihole-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: 2026.07.2
     created: "2026-07-22T22:05:30.328572728Z"
     description: Pi-hole network-wide ad blocker + local DNS, with Ingress/TLS support
       (forge-ca) that the upstream community chart doesn't provide
@@ -96,4 +119,4 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.0/prisma-dev-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-23T17:13:07.013806867Z"
+generated: "2026-07-23T17:35:09.873111372Z"
