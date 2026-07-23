@@ -1,0 +1,6 @@
+apiVersion: v2
+name: llama-server
+description: Pointer chart for the llama.cpp server (Vulkan backend) running as a native systemd service on the host — not a pod, since it needs direct access to the host's Vulkan/render device for GPU inference
+type: application
+version: 0.1.0
+appVersion: "b10107"

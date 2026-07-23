@@ -1,0 +1,14 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    kubernetes.io/service-name: {{ .Release.Name }}
+addressType: IPv4
+endpoints:
+  - addresses:
+      - {{ .Values.host.ip }}
+ports:
+  - name: http
+    port: {{ .Values.host.port }}
+    protocol: TCP
