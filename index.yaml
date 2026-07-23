@@ -23,6 +23,19 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/home-assistant-0.1.1/home-assistant-0.1.1.tgz
     version: 0.1.1
+  llama-server:
+  - apiVersion: v2
+    appVersion: b10107
+    created: "2026-07-23T17:13:07.013787772Z"
+    description: Pointer chart for the llama.cpp server (Vulkan backend) running as
+      a native systemd service on the host — not a pod, since it needs direct access
+      to the host's Vulkan/render device for GPU inference
+    digest: 63adb56cd019704809867ab58a5de3b55f546cf5d1c63ca78f6a7ecbf5bbcead
+    name: llama-server
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/llama-server-0.1.0/llama-server-0.1.0.tgz
+    version: 0.1.0
   matter-server:
   - apiVersion: v2
     appVersion: stable
@@ -83,4 +96,4 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.0/prisma-dev-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-22T22:05:30.328591246Z"
+generated: "2026-07-23T17:13:07.013806867Z"
