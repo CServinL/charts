@@ -86,6 +86,17 @@ entries:
   node-red:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-07-25T22:25:01.784815217Z"
+    description: Node-RED, flow-based event/automation glue — official image, Longhorn-backed
+      flow storage
+    digest: ad58daee556f45f865d27f74ad47fb44967170d64e175b4d5b19e9a4e906f561
+    name: node-red
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/node-red-0.1.1/node-red-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-07-25T17:15:51.489511196Z"
     description: Node-RED, flow-based event/automation glue — official image, Longhorn-backed
       flow storage
@@ -96,6 +107,17 @@ entries:
     - https://github.com/CServinL/charts/releases/download/node-red-0.1.0/node-red-0.1.0.tgz
     version: 0.1.0
   openclaw:
+  - apiVersion: v2
+    appVersion: slim
+    created: "2026-07-25T22:25:01.90111517Z"
+    description: OpenClaw multi-agent gateway (home automation + per-campaign marketing
+      agents), adapted from OpenClaw's official Kubernetes manifests
+    digest: c716094b7a7e8af37d56ec319fee2dddc4079139f04c9a72fd424b12f0af0acc
+    name: openclaw
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/openclaw-0.1.1/openclaw-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: slim
     created: "2026-07-25T17:15:51.592840377Z"
@@ -133,6 +155,18 @@ entries:
   prisma-dev:
   - apiVersion: v2
     appVersion: dev
+    created: "2026-07-25T22:25:02.005382491Z"
+    description: Prisma — Research Library Assistant (dev-mode deployment, editable
+      install from source, git-pull to update)
+    digest: 9c34d169463592c978a8017f716d30fbf573ba34991f3e0470c23138263c5546
+    icon: https://raw.githubusercontent.com/CServinL/prisma/main/ui/static/prisma-icon.svg
+    name: prisma-dev
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.8/prisma-dev-0.1.8.tgz
+    version: 0.1.8
+  - apiVersion: v2
+    appVersion: dev
     created: "2026-07-22T22:02:48.073950812Z"
     description: Prisma — Research Library Assistant (dev-mode deployment, editable
       install from source, git-pull to update)
@@ -155,4 +189,4 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.0/prisma-dev-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-25T17:15:51.59286881Z"
+generated: "2026-07-25T22:25:02.005401877Z"
