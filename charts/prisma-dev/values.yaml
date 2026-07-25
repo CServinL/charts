@@ -81,7 +81,11 @@ auth:
   # override file (not committed to git).
   passwordHash: ""
 
+# Same TLS/DNS pattern every other *.forge.internal service uses
+# (forge-ca ClusterIssuer, Pi-hole custom DNS record) — needed for the
+# desktop/PWA client's "Server URL" to reach this deployment from the LAN
+# at all, not just from inside the cluster.
 ingress:
-  enabled: false
+  enabled: true
   host: prisma.forge.internal
   clusterIssuer: forge-ca
