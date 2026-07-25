@@ -26,6 +26,7 @@ Charts will then be browsable/installable under Apps → Charts.
 - **matter-server** — Matter.js Server, a companion WebSocket service for Home Assistant's Matter integration. Drop-in replacement for the deprecated `python-matter-server` (no longer maintained).
 - **node-red** — Node-RED, flow-based event/automation glue.
 - **openclaw** — OpenClaw multi-agent gateway (home automation + per-campaign marketing agents), adapted from OpenClaw's official Kubernetes manifests.
+- **knime-runner** — headless KNIME batch-executor, run on-demand as a Job (ECS-Fargate-style: prepared image + params, runs to completion, results on a shared PVC).
 - **pihole** — Pi-hole DNS/ad-blocking, with the `forge-ca`/TLS + LAN DNS pattern every other service here reuses.
 - **llama-server** — thin chart (Service + EndpointSlice, no selector) exposing the host-native llama.cpp process to the cluster.
 - **prisma-dev** — dev deployment for the Prisma research-assistant project.

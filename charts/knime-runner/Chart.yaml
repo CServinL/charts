@@ -1,0 +1,6 @@
+apiVersion: v2
+name: knime-runner
+description: Headless KNIME batch-executor, run on-demand as a Job — git-pulls knime-workflows before each run, writes to a shared results PVC
+type: application
+version: 0.1.0
+appVersion: "17"

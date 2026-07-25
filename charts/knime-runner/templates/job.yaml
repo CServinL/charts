@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  # Never fires on its own (Feb 31st doesn't exist) — this CronJob exists
+  # purely as a reusable Job template, not a schedule. Trigger ad-hoc runs:
+  #   kubectl create job --from=cronjob/{{ .Release.Name }} <run-name> -n <namespace>
+  # Running a different workflow than values.yaml's default, or passing
+  # -workflow.variable params per run, needs a standalone Job manifest
+  # instead (copy this jobTemplate.spec as a starting point) — kubectl
+  # create --from=cronjob doesn't support per-invocation arg overrides.
+  schedule: "0 0 31 2 *"
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            fsGroup: 1000
+          initContainers:
+            - name: fetch-workflows
+              image: alpine/git:latest
+              command:
+                - sh
+                - -c
+                - |
+                  mkdir -p /root/.ssh
+                  cp /deploy-key/id_ed25519 /root/.ssh/id_ed25519
+                  chmod 600 /root/.ssh/id_ed25519
+                  ssh-keyscan -t ed25519 github.com >> /root/.ssh/known_hosts 2>/dev/null
+                  git clone --depth 1 {{ .Values.git.repo }} /workflows
+              volumeMounts:
+                - name: deploy-key
+                  mountPath: /deploy-key
+                  readOnly: true
+                - name: workflows
+                  mountPath: /workflows
+          containers:
+            - name: knime
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              args:
+                - "-workflowDir=/workflows/{{ .Values.workflow.name }}"
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 1000
+                allowPrivilegeEscalation: false
+              volumeMounts:
+                - name: workflows
+                  mountPath: /workflows
+                - name: results
+                  mountPath: /results
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+          volumes:
+            - name: deploy-key
+              secret:
+                secretName: {{ .Values.git.secretName }}
+                defaultMode: 0400
+            - name: workflows
+              emptyDir: {}
+            - name: results
+              persistentVolumeClaim:
+                claimName: {{ .Release.Name }}-results

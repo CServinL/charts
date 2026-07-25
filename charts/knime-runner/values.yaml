@@ -1,0 +1,32 @@
+image:
+  # Built from CServinL/knime-workflows/runner/Dockerfile, pushed manually
+  # (no CI for this one yet — the KNIME_URL build-arg can't be automated,
+  # see that Dockerfile's comments).
+  repository: ghcr.io/cservinl/knime-runner
+  tag: latest
+
+git:
+  repo: "git@github.com:CServinL/knime-workflows.git"
+  # Read-only deploy key, scoped to this repo only — not the user's personal
+  # SSH key. Secret is created separately (not templated from values, never
+  # committed): kubectl create secret generic knime-workflows-deploy-key
+  #   --from-file=id_ed25519=<private key> -n <namespace>
+  secretName: knime-workflows-deploy-key
+
+# Default workflow to run when not overridden per-invocation (see README —
+# ad-hoc runs with a different workflow/parameters need a custom Job manifest,
+# not just `kubectl create job --from=cronjob/...`).
+workflow:
+  name: ""
+
+persistence:
+  size: 5Gi
+  storageClassName: longhorn
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 4Gi
