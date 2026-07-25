@@ -31,8 +31,8 @@ spec:
             - name: GH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.deployTokenSecretName }}
-                  key: token
+                  name: {{ .Values.secretsName }}
+                  key: GH_TOKEN
           command:
             - sh
             - -c
@@ -84,12 +84,12 @@ spec:
             - name: GH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.deployTokenSecretName }}
-                  key: token
+                  name: {{ .Values.secretsName }}
+                  key: GH_TOKEN
             - name: OPENROUTER_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.openrouterSecretName }}
+                  name: {{ .Values.secretsName }}
                   key: OPENROUTER_API_KEY
           ports:
             - name: api
