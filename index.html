@@ -155,6 +155,12 @@ helm search repo cservinl
 <ul>
 <li><strong>home-assistant</strong> — minimal Home Assistant chart, no forced dependencies (no Postgres/CNPG requirement, no bundled zigbee2mqtt/nats).</li>
 <li><strong>matter-server</strong> — Matter.js Server, a companion WebSocket service for Home Assistant's Matter integration. Drop-in replacement for the deprecated <code>python-matter-server</code> (no longer maintained).</li>
+<li><strong>node-red</strong> — Node-RED, flow-based event/automation glue.</li>
+<li><strong>openclaw</strong> — OpenClaw multi-agent gateway (home automation + per-campaign marketing agents), adapted from OpenClaw's official Kubernetes manifests.</li>
+<li><strong>knime-runner</strong> — headless KNIME batch-executor, run on-demand as a Job (ECS-Fargate-style: prepared image + params, runs to completion, results on a shared PVC).</li>
+<li><strong>pihole</strong> — Pi-hole DNS/ad-blocking, with the <code>forge-ca</code>/TLS + LAN DNS pattern every other service here reuses.</li>
+<li><strong>llama-server</strong> — thin chart (Service + EndpointSlice, no selector) exposing the host-native llama.cpp process to the cluster.</li>
+<li><strong>prisma-dev</strong> — dev deployment for the Prisma research-assistant project.</li>
 </ul>
 <h2 id="releasing">Releasing</h2>
 <p>Publishing is automated via <code>.github/workflows/release.yml</code> (<code>helm/chart-releaser-action</code>) — bump the chart's <code>version</code> in its <code>Chart.yaml</code> and push to <code>main</code>; it packages, creates a GitHub Release, and updates <code>index.yaml</code> on the <code>gh-pages</code> branch automatically.</p>
