@@ -42,12 +42,38 @@ openrouter:
   # Cheap model by default — swap once you've picked one deliberately (see
   # TODO.md's OpenRouter model discussion for kg extraction/chat).
   chatModel: "openai/gpt-4o-mini"
+  # KG extraction routed to OpenRouter too (2026-07-25), not local llama-swap
+  # — forge's own iGPU (680M) craters on 7B-class token generation (see
+  # docs/llamacpp-vulkan-forge-vs-anvil-benchmark.md), and no local 3B-class
+  # model tested so far (generic qwen2.5-3b, NuExtract-2.0-4B) clears the
+  # extraction-quality bar (docs/qwen3-family-evaluation.md,
+  # docs/nuextract-2.0-kg-extraction-evaluation.md) — trading local compute
+  # for cost-per-call rather than shipping known-bad extraction quality.
+  # Uses the same OPENROUTER_API_KEY secret as chat.
+  kgModel: "openai/gpt-4o-mini"
+  kgContextWindow: 128000
 
-ollama:
-  # Not deployed yet as part of this chart — placeholder host:port for a
-  # separate Ollama instance (Forge's own 680M, CPU-only, or wherever it ends
-  # up running). Update once that's actually stood up.
-  host: "ollama.default.svc.cluster.local:11434"
+# Local llama-swap instance already deployed on forge (see the sibling
+# llama-server chart) — used for embeddings only (bge-m3; OpenRouter serves
+# no embedding models). Chat/KG both go to OpenRouter instead of this roster
+# (see above) — forge's iGPU isn't fast enough for 7B-class KG extraction,
+# and chat was already cloud-routed (ADR-014).
+retrieval:
+  embeddingModel: "bge-m3"
+  baseUrl: "http://llama-server.default.svc.cluster.local:8090"
+
+# ADR-011 password-mode auth — forge is reachable over the LAN (that's the
+# whole point of desktop vault-sync), so this should not stay "none" once
+# anything besides local testing depends on it.
+auth:
+  mode: password
+  # Generate with (from a prisma checkout, venv active):
+  #   prisma auth hash-password
+  # Left empty by default like zotero.api_key below — no password will ever
+  # verify() true against an empty hash (see server/auth.py), so auth is
+  # effectively "no one can log in" until this is set via --set or a values
+  # override file (not committed to git).
+  passwordHash: ""
 
 ingress:
   enabled: false

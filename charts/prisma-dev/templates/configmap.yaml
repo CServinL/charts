@@ -21,12 +21,17 @@ data:
       prefer_high_quality: true
       min_confidence_score: 0.3
 
-    # Analysis LLM (stream relevance gate, "prisma review") — still Ollama-only
-    # in the current code (no OpenRouter support here yet, unlike chat/KG).
+    # KG extraction — OpenRouter (2026-07-25), same reasoning as chat below:
+    # forge's iGPU can't run a 7B-class model fast enough, and no local
+    # 3B-class model tested meets the extraction-quality bar. api_key comes
+    # from the OPENROUTER_API_KEY env var (see deployment.yaml), never this
+    # file. context_window is a static value here since OpenRouter has no
+    # local endpoint to live-query it from (unlike ollama/llama_cpp).
     llm:
-      provider: 'ollama'
-      model: 'qwen2.5:7b-32k'
-      host: '{{ .Values.ollama.host }}'
+      provider: 'openrouter'
+      model: '{{ .Values.openrouter.kgModel }}'
+      api_key_env: 'OPENROUTER_API_KEY'
+      context_window: {{ .Values.openrouter.kgContextWindow }}
 
     # Chat backend — OpenRouter (ADR-014, openai-SDK-compatible). api_key comes
     # from the OPENROUTER_API_KEY env var (see deployment.yaml), not this file.
@@ -34,12 +39,35 @@ data:
       provider: 'openrouter'
       model: '{{ .Values.openrouter.chatModel }}'
 
-    # ChromaDB embeddings — still Ollama-only (nomic-embed-text has no
-    # OpenRouter equivalent; OpenRouter doesn't serve embedding models).
+    # ChromaDB embeddings — local, via the already-deployed llama-server
+    # chart's bge-m3 (OpenRouter serves no embedding models at all).
     retrieval:
-      embedding_model: 'nomic-embed-text'
-      ollama_base_url: 'http://{{ .Values.ollama.host }}'
+      provider: 'llama_cpp'
+      embedding_model: '{{ .Values.retrieval.embeddingModel }}'
+      ollama_base_url: '{{ .Values.retrieval.baseUrl }}'
       chroma_port: {{ .Values.service.chromaPort }}
+
+    # ADR-011 password-mode auth — see values.yaml's auth.passwordHash comment
+    # for how to generate/set the actual hash.
+    server:
+      auth:
+        mode: '{{ .Values.auth.mode }}'
+        password_hash: '{{ .Values.auth.passwordHash }}'
+
+    # Cloud pool for both chat and KG's OpenRouter calls — `type: cloud`
+    # means no local VRAM/model-affinity constraint (see supervisor.py's
+    # _load_compute_pools docstring). Without this, both would silently fall
+    # into the single-model-affinity "default" pool fallback and contend
+    # with each other and with chroma's local embedding calls for no real
+    # hardware reason.
+    compute_pools:
+      - name: openrouter
+        type: cloud
+        provider: openrouter
+        max_concurrent: 8
+        models:
+          - name: '{{ .Values.openrouter.chatModel }}'
+          - name: '{{ .Values.openrouter.kgModel }}'
 
     output:
       directory: './outputs'

@@ -69,9 +69,20 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+            # HOME=/data above, so ConfigLoader's default lookup
+            # (~/.config/prisma/config.yaml) resolves to this path. Without
+            # this mount, the ConfigMap this chart creates was never
+            # actually wired into the running pod at all — a real gap found
+            # 2026-07-25, not a hypothetical one.
+            - name: config
+              mountPath: /data/.config/prisma/config.yaml
+              subPath: config.yaml
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-data
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
