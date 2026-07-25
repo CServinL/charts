@@ -23,19 +23,19 @@ spec:
           initContainers:
             - name: fetch-workflows
               image: alpine/git:latest
+              env:
+                - name: GIT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.git.secretName }}
+                      key: {{ .Values.git.secretKey }}
               command:
                 - sh
                 - -c
                 - |
-                  mkdir -p /root/.ssh
-                  cp /deploy-key/id_ed25519 /root/.ssh/id_ed25519
-                  chmod 600 /root/.ssh/id_ed25519
-                  ssh-keyscan -t ed25519 github.com >> /root/.ssh/known_hosts 2>/dev/null
-                  git clone --depth 1 {{ .Values.git.repo }} /workflows
+                  AUTH_URL=$(echo "{{ .Values.git.repo }}" | sed "s#https://#https://x-access-token:${GIT_TOKEN}@#")
+                  git clone --depth 1 "$AUTH_URL" /workflows
               volumeMounts:
-                - name: deploy-key
-                  mountPath: /deploy-key
-                  readOnly: true
                 - name: workflows
                   mountPath: /workflows
           containers:
@@ -55,10 +55,6 @@ spec:
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
           volumes:
-            - name: deploy-key
-              secret:
-                secretName: {{ .Values.git.secretName }}
-                defaultMode: 0400
             - name: workflows
               emptyDir: {}
             - name: results

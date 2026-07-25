@@ -6,12 +6,13 @@ image:
   tag: latest
 
 git:
-  repo: "git@github.com:CServinL/knime-workflows.git"
-  # Read-only deploy key, scoped to this repo only — not the user's personal
-  # SSH key. Secret is created separately (not templated from values, never
-  # committed): kubectl create secret generic knime-workflows-deploy-key
-  #   --from-file=id_ed25519=<private key> -n <namespace>
-  secretName: knime-workflows-deploy-key
+  repo: "https://github.com/CServinL/knime-workflows.git"
+  # GitHub PAT, read via HTTPS (x-access-token). Secret created separately
+  # (not templated from values, never committed):
+  #   kubectl create secret generic knime-workflows-token \
+  #     --from-literal=token=<PAT> -n runners
+  secretName: knime-workflows-token
+  secretKey: token
 
 # Default workflow to run when not overridden per-invocation (see README —
 # ad-hoc runs with a different workflow/parameters need a custom Job manifest,

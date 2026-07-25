@@ -18,16 +18,18 @@ runs to completion, results land on a shared PVC.
    (the image is just KNIME + a JRE, no workflow content baked in — those
    get git-cloned at run time — so there's nothing sensitive in the image
    itself, and it avoids needing an `imagePullSecret` on forge).
-2. Create the read-only deploy-key Secret (the key itself is a GitHub deploy
-   key on `CServinL/knime-workflows`, read-only, not the user's personal
-   SSH key — never commit the private key):
+2. Create the token Secret (a GitHub Personal Access Token, used over HTTPS —
+   never commit it, don't put it in `values.yaml`):
    ```
-   kubectl create secret generic knime-workflows-deploy-key \
-     --from-file=id_ed25519=<path-to-private-key> -n <namespace>
+   kubectl create secret generic knime-workflows-token \
+     --from-literal=token=<PAT> -n runners
    ```
-3. `helm install`/`helm upgrade` with `workflow.name` set to a folder that
-   exists in `knime-workflows` (matches the export convention in that repo's
-   README).
+   Live in namespace `runners`. Note: a PAT is account-scoped by GitHub's
+   classic-token model, broader than a repo-only SSH deploy key would be —
+   scope it as tightly as GitHub's UI allows for this token specifically.
+3. `helm install`/`helm upgrade -n runners` with `workflow.name` set to a
+   folder that exists in `knime-workflows` (matches the export convention in
+   that repo's README).
 
 ## Triggering a run
 
