@@ -1,0 +1,6 @@
+apiVersion: v2
+name: node-red
+description: Node-RED, flow-based event/automation glue — official image, Longhorn-backed flow storage
+type: application
+version: 0.1.0
+appVersion: "latest"

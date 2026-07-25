@@ -1,0 +1,26 @@
+image:
+  repository: nodered/node-red
+  tag: latest
+
+persistence:
+  size: 1Gi
+  # Explicit: forge's cluster currently has two StorageClasses both flagged
+  # (default) (local-path and longhorn) — ambiguous, don't rely on whichever
+  # wins by omission.
+  storageClassName: longhorn
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi
+
+service:
+  port: 1880
+
+ingress:
+  enabled: true
+  host: nodered.forge.internal
+  clusterIssuer: forge-ca

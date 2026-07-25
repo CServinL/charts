@@ -1,0 +1,56 @@
+image:
+  repository: ghcr.io/openclaw/openclaw
+  tag: slim
+
+# lan = 0.0.0.0 inside the pod, required for the Ingress to reach the gateway
+# (default is loopback-only). Token auth (already wired below) is mandatory
+# for any non-loopback bind — OpenClaw refuses to start otherwise.
+gateway:
+  bind: lan
+
+persistence:
+  size: 10Gi
+  # Explicit: forge's cluster currently has two StorageClasses both flagged
+  # (default) (local-path and longhorn) — ambiguous, don't rely on whichever
+  # wins by omission.
+  storageClassName: longhorn
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m
+  limits:
+    memory: 2Gi
+    cpu: "1"
+
+service:
+  port: 18789
+
+ingress:
+  enabled: true
+  host: openclaw.forge.internal
+  clusterIssuer: forge-ca
+
+# Rendered directly into openclaw.json's agents.list (array form, matches
+# OpenClaw's own official k8s manifest — NOT the keyed agents.entries form
+# from the docs, which appears to be a separate/alternate schema).
+# Add one entry per marketing campaign as needed (marketing-<campaign>),
+# then `helm upgrade`. Per-agent skill scoping (docs mention agents.entries.*.skills
+# for the keyed form) is unconfirmed for this array form — verify before
+# relying on it once skills are actually assigned.
+agents:
+  list:
+    - id: home
+      name: "Home Automation"
+      workspace: "/home/node/.openclaw/workspace-home"
+
+# Secrets are NOT set here — pass at install/upgrade time via
+# `helm upgrade --install --set secrets.anthropicApiKey=... `, never commit
+# them. gatewayToken auto-generates on first install and is preserved across
+# upgrades (see templates/secret.yaml).
+secrets:
+  anthropicApiKey: ""
+  openaiApiKey: ""
+  geminiApiKey: ""
+  openrouterApiKey: ""
+  gatewayToken: ""

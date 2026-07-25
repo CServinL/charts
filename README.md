@@ -24,6 +24,11 @@ Charts will then be browsable/installable under Apps → Charts.
 
 - **home-assistant** — minimal Home Assistant chart, no forced dependencies (no Postgres/CNPG requirement, no bundled zigbee2mqtt/nats).
 - **matter-server** — Matter.js Server, a companion WebSocket service for Home Assistant's Matter integration. Drop-in replacement for the deprecated `python-matter-server` (no longer maintained).
+- **node-red** — Node-RED, flow-based event/automation glue.
+- **openclaw** — OpenClaw multi-agent gateway (home automation + per-campaign marketing agents), adapted from OpenClaw's official Kubernetes manifests.
+- **pihole** — Pi-hole DNS/ad-blocking, with the `forge-ca`/TLS + LAN DNS pattern every other service here reuses.
+- **llama-server** — thin chart (Service + EndpointSlice, no selector) exposing the host-native llama.cpp process to the cluster.
+- **prisma-dev** — dev deployment for the Prisma research-assistant project.
 
 ## Releasing
 
