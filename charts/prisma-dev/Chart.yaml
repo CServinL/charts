@@ -2,6 +2,6 @@ apiVersion: v2
 name: prisma-dev
 description: Prisma — Research Library Assistant (dev-mode deployment, editable install from source, git-pull to update)
 type: application
-version: 0.1.3
+version: 0.1.4
 appVersion: "dev"
 icon: https://raw.githubusercontent.com/CServinL/prisma/main/ui/static/prisma-icon.svg

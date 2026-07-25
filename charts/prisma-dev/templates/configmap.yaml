@@ -35,9 +35,16 @@ data:
 
     # Chat backend — OpenRouter (ADR-014, openai-SDK-compatible). api_key comes
     # from the OPENROUTER_API_KEY env var (see deployment.yaml), not this file.
+    # pool must match a compute_pools name below — ChatLLM passes it
+    # explicitly to resource_lock.lease() (unlike KG, which only matches by
+    # model name), so leaving this at ChatConfig's "local-ollama" default
+    # (no such pool exists in this deployment) meant every chat lease
+    # request was denied outright — found live 2026-07-25, chat never
+    # actually reached OpenRouter despite provider being set correctly.
     chat:
       provider: 'openrouter'
       model: '{{ .Values.openrouter.chatModel }}'
+      pool: 'openrouter'
 
     # ChromaDB embeddings — local, via the already-deployed llama-server
     # chart's bge-m3 (OpenRouter serves no embedding models at all).
