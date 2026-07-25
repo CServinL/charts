@@ -15,21 +15,34 @@ spec:
         app: {{ .Release.Name }}
     spec:
       initContainers:
-        # Clone on first run, pull on every subsequent pod (re)start — this is
-        # the "git pull to update" half of dev mode. The other half (actually
-        # picking up the change) is a pod restart, since the venv/import
-        # caches are process-local — see chart README.
+        # Clone on first run, hard-reset to the remote branch tip on every
+        # subsequent pod (re)start — this is the "git pull to update" half
+        # of dev mode. `fetch` + `reset --hard`, not `git pull`: main gets
+        # force-pushed/rewritten from time to time (e.g. amending a commit
+        # message after merge), which leaves any pod cloned from the old
+        # history unable to fast-forward — a plain `git pull` errors out on
+        # exactly that, `reset --hard` never can (a dev-mode pod has no
+        # local commits of its own worth preserving). The other half of
+        # "actually picking up the change" is a pod restart, since the
+        # venv/import caches are process-local — see chart README.
         - name: git-sync
           image: alpine/git:latest
+          env:
+            - name: GH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployTokenSecretName }}
+                  key: token
           command:
             - sh
             - -c
             - |
               set -e
+              AUTH_URL="https://${GH_TOKEN}@$(echo {{ .Values.git.repo }} | sed 's#https://##')"
               if [ -d /data/repo/.git ]; then
-                cd /data/repo && git pull
+                cd /data/repo && git remote set-url origin "$AUTH_URL" && git fetch origin {{ .Values.git.branch }} && git reset --hard origin/{{ .Values.git.branch }}
               else
-                git clone --branch {{ .Values.git.branch }} {{ .Values.git.repo }} /data/repo
+                git clone --branch {{ .Values.git.branch }} "$AUTH_URL" /data/repo
               fi
           volumeMounts:
             - name: data
@@ -49,11 +62,30 @@ spec:
       containers:
         - name: prisma
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command: ["/data/venv/bin/prisma", "serve"]
+          # git isn't in python:3.12-slim by default — installed here (not
+          # baked into the venv/PVC, so this reruns every pod start, a few
+          # seconds' cost) specifically so a manual `kubectl exec ... git
+          # pull` works for an ad-hoc refresh without needing `kubectl
+          # debug`. The authenticated remote URL is set up the same way the
+          # git-sync initContainer does, so that manual pull doesn't hit
+          # unauthenticated rate limits either.
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              which git >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y --no-install-recommends -qq git && rm -rf /var/lib/apt/lists/*)
+              git -C /data/repo remote set-url origin "https://${GH_TOKEN}@$(echo {{ .Values.git.repo }} | sed 's#https://##')" || true
+              exec /data/venv/bin/prisma serve
           workingDir: /data/repo
           env:
             - name: HOME
               value: /data
+            - name: GH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployTokenSecretName }}
+                  key: token
             - name: OPENROUTER_API_KEY
               valueFrom:
                 secretKeyRef:

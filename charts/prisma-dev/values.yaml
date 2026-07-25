@@ -10,6 +10,16 @@ git:
   repo: https://github.com/CServinL/prisma.git
   branch: main
 
+# Name of a pre-created Secret (not managed by this chart) holding a GitHub
+# token, used for authenticated HTTPS git operations (both the git-sync
+# initContainer and a manual `kubectl exec ... git pull` for updates) —
+# prisma is public so this isn't required for clone/pull to work at all,
+# but avoids unauthenticated rate limits across the LAN's several
+# git-clone-based deployments sharing forge's egress IP. Not scoped to
+# prisma specifically (shared across deployments), e.g.:
+#   kubectl create secret generic deploy-all -n prisma --from-file=token=...
+deployTokenSecretName: deploy-all
+
 persistence:
   # Holds the cloned repo + venv (rebuilt fast if unchanged) + vault + config.
   # Longhorn is plain/unencrypted here on purpose — vault encryption is a
