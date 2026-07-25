@@ -14,6 +14,11 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
+      # The official image runs as a non-root user (uid 1000); Longhorn
+      # mounts fresh PVCs root:root by default, so without fsGroup the
+      # entrypoint's first-run settings.js copy fails with EACCES.
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: node-red
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

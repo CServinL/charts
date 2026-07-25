@@ -2,5 +2,5 @@ apiVersion: v2
 name: openclaw
 description: OpenClaw multi-agent gateway (home automation + per-campaign marketing agents), adapted from OpenClaw's official Kubernetes manifests
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "slim"

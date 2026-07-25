@@ -10,7 +10,10 @@ data:
         "bind": {{ .Values.gateway.bind | quote }},
         "port": {{ .Values.service.port }},
         "auth": { "mode": "token" },
-        "controlUi": { "enabled": true }
+        "controlUi": {
+          "enabled": true,
+          "allowedOrigins": ["https://{{ .Values.ingress.host }}"]
+        }
       },
       "agents": {
         "defaults": { "workspace": "/home/node/.openclaw/workspace" },
