@@ -7,15 +7,17 @@ runs to completion, results land on a shared PVC.
 
 ## One-time setup before `helm install`
 
-1. Build and push the image (see `CServinL/knime-workflows/runner/Dockerfile`
-   — needs a `KNIME_URL` build-arg, get it from
+1. The image builds automatically via
+   `CServinL/knime-workflows/.github/workflows/build-runner.yml` on every
+   push to `runner/Dockerfile` (or manual dispatch), publishing to
+   `ghcr.io/cservinl/knime-runner`. One manual step first: set the
+   `KNIME_URL` repo variable (Settings > Secrets and variables > Actions >
+   Variables) — get the current Linux tar.gz link from
    https://www.knime.com/downloads/download-knime, gated behind a form so
-   it can't be automated):
-   ```
-   docker build --build-arg KNIME_URL=<...> -t ghcr.io/cservinl/knime-runner:latest \
-     CServinL/knime-workflows/runner
-   docker push ghcr.io/cservinl/knime-runner:latest
-   ```
+   it can't be scraped/automated. **The GHCR package is left public**
+   (the image is just KNIME + a JRE, no workflow content baked in — those
+   get git-cloned at run time — so there's nothing sensitive in the image
+   itself, and it avoids needing an `imagePullSecret` on forge).
 2. Create the read-only deploy-key Secret (the key itself is a GitHub deploy
    key on `CServinL/knime-workflows`, read-only, not the user's personal
    SSH key — never commit the private key):
