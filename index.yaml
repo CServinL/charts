@@ -23,6 +23,18 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/home-assistant-0.1.1/home-assistant-0.1.1.tgz
     version: 0.1.1
+  knime-runner:
+  - apiVersion: v2
+    appVersion: "17"
+    created: "2026-07-25T17:15:51.36381333Z"
+    description: Headless KNIME batch-executor, run on-demand as a Job — git-pulls
+      knime-workflows before each run, writes to a shared results PVC
+    digest: f6d8b069e7cf5cd3b372f9d9533fbf27626422df30b8833c50e83e622151c5ff
+    name: knime-runner
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/knime-runner-0.1.0/knime-runner-0.1.0.tgz
+    version: 0.1.0
   llama-server:
   - apiVersion: v2
     appVersion: b10107
@@ -70,6 +82,30 @@ entries:
     type: application
     urls:
     - https://github.com/CServinL/charts/releases/download/matter-server-0.1.0/matter-server-0.1.0.tgz
+    version: 0.1.0
+  node-red:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-07-25T17:15:51.489511196Z"
+    description: Node-RED, flow-based event/automation glue — official image, Longhorn-backed
+      flow storage
+    digest: 84157c742d060ce7905a667819f28aabe6da060145413795ca2fd28c6c7377bc
+    name: node-red
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/node-red-0.1.0/node-red-0.1.0.tgz
+    version: 0.1.0
+  openclaw:
+  - apiVersion: v2
+    appVersion: slim
+    created: "2026-07-25T17:15:51.592840377Z"
+    description: OpenClaw multi-agent gateway (home automation + per-campaign marketing
+      agents), adapted from OpenClaw's official Kubernetes manifests
+    digest: 9a801355ba6e3515730c1042ffb309c12b630e57f0e31683d4be356ab9ab5fa0
+    name: openclaw
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/openclaw-0.1.0/openclaw-0.1.0.tgz
     version: 0.1.0
   pihole:
   - apiVersion: v2
@@ -119,4 +155,4 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.0/prisma-dev-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-23T17:35:09.873111372Z"
+generated: "2026-07-25T17:15:51.59286881Z"
