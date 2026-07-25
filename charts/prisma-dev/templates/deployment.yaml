@@ -76,7 +76,16 @@ spec:
               set -e
               which git >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y --no-install-recommends -qq git && rm -rf /var/lib/apt/lists/*)
               git -C /data/repo remote set-url origin "https://${GH_TOKEN}@$(echo {{ .Values.git.repo }} | sed 's#https://##')" || true
-              exec /data/venv/bin/prisma serve
+              # --host 127.0.0.1 (prisma serve's own default) only accepts
+              # connections from inside the same network namespace — fine
+              # for `kubectl exec`-based testing (same pod), but means the
+              # Service/Ingress could never actually reach it at all. Found
+              # live 2026-07-25 while setting up the Ingress: the pod
+              # itself was always healthy, kubectl exec + curl localhost
+              # always worked, but the Service's ClusterIP DNS name got
+              # "Connection refused" — nothing was listening on any
+              # externally-reachable interface.
+              exec /data/venv/bin/prisma serve --host 0.0.0.0
           workingDir: /data/repo
           env:
             - name: HOME
