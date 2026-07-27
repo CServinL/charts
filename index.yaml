@@ -155,6 +155,18 @@ entries:
   prisma-dev:
   - apiVersion: v2
     appVersion: dev
+    created: "2026-07-27T17:08:26.942717157Z"
+    description: Prisma — Research Library Assistant (dev-mode deployment, editable
+      install from source, git-pull to update)
+    digest: 11fec3831034da01428313064eddd166c0e391c139f12ae95cf550dc4f8881ca
+    icon: https://raw.githubusercontent.com/CServinL/prisma/main/ui/static/prisma-icon.svg
+    name: prisma-dev
+    type: application
+    urls:
+    - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.9/prisma-dev-0.1.9.tgz
+    version: 0.1.9
+  - apiVersion: v2
+    appVersion: dev
     created: "2026-07-25T22:25:02.005382491Z"
     description: Prisma — Research Library Assistant (dev-mode deployment, editable
       install from source, git-pull to update)
@@ -189,4 +201,4 @@ entries:
     urls:
     - https://github.com/CServinL/charts/releases/download/prisma-dev-0.1.0/prisma-dev-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-25T22:25:02.005401877Z"
+generated: "2026-07-27T17:08:26.942741613Z"
