@@ -12,8 +12,15 @@ data:
   config.toml: |
     [sources.zotero]
     enabled = true
-    api_key = ""             # set after first deploy: zotero.org/settings/keys
-    library_id = ""
+    # Real key/library ID live in the pre-created Secret's ZOTERO_API_KEY/
+    # ZOTERO_LIBRARY_ID (see values.yaml's secretsName comment) --
+    # api_key_env/library_id_env take priority over their literal
+    # counterparts, so the ConfigMap itself never holds either. Neither is
+    # required for the deployment to start -- Zotero integration just
+    # degrades to offline mode if these Secret keys are unset (see
+    # deployment.yaml's `optional: true` on both env vars).
+    api_key_env = "ZOTERO_API_KEY"
+    library_id_env = "ZOTERO_LIBRARY_ID"
     library_type = "user"
 
     [search]
