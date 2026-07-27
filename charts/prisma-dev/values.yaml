@@ -16,14 +16,16 @@ git:
 #   - GH_TOKEN (authenticated git ops — prisma is public so this isn't
 #     required for clone/pull to work at all, but avoids unauthenticated
 #     rate limits across the LAN's several git-clone-based deployments)
-#   - ZOTERO_API_KEY (optional — referenced via config.toml's
-#     sources.zotero.api_key_env, 2026-07-27; Zotero integration just stays
-#     offline if this key is absent from the Secret, not a startup failure)
+#   - ZOTERO_API_KEY / ZOTERO_LIBRARY_ID (both optional — referenced via
+#     config.toml's sources.zotero.api_key_env/library_id_env, 2026-07-27;
+#     Zotero integration just stays offline if either is absent from the
+#     Secret, not a startup failure)
 # e.g.:
 #   kubectl create secret generic prisma-secrets -n prisma \
 #     --from-literal=OPENROUTER_API_KEY=sk-or-... \
 #     --from-literal=GH_TOKEN=ghp_... \
-#     --from-literal=ZOTERO_API_KEY=... # optional
+#     --from-literal=ZOTERO_API_KEY=... \
+#     --from-literal=ZOTERO_LIBRARY_ID=... # both optional
 secretsName: prisma-secrets
 
 persistence:

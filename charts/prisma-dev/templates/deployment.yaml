@@ -102,12 +102,18 @@ spec:
                   key: OPENROUTER_API_KEY
             # Optional -- unlike GH_TOKEN/OPENROUTER_API_KEY, Zotero
             # integration isn't required for this deployment to run at all,
-            # so a Secret without this key must not block pod startup.
+            # so a Secret without these keys must not block pod startup.
             - name: ZOTERO_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secretsName }}
                   key: ZOTERO_API_KEY
+                  optional: true
+            - name: ZOTERO_LIBRARY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secretsName }}
+                  key: ZOTERO_LIBRARY_ID
                   optional: true
           ports:
             - name: api
