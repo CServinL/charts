@@ -111,13 +111,14 @@ spec:
             - name: data
               mountPath: /data
             # HOME=/data above, so ConfigLoader's default lookup
-            # (~/.config/prisma/config.yaml) resolves to this path. Without
+            # (~/.config/prisma/config.toml) resolves to this path. Without
             # this mount, the ConfigMap this chart creates was never
             # actually wired into the running pod at all — a real gap found
-            # 2026-07-25, not a hypothetical one.
+            # 2026-07-25, not a hypothetical one. (config.yaml -> config.toml
+            # 2026-07-27, see configmap.yaml's own comment.)
             - name: config
-              mountPath: /data/.config/prisma/config.yaml
-              subPath: config.yaml
+              mountPath: /data/.config/prisma/config.toml
+              subPath: config.toml
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
