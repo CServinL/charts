@@ -1,21 +1,15 @@
 image:
-  # Generic Python base — dev mode has no baked Prisma image. An initContainer
-  # clones/pulls the repo and does `pip install -e .` into a persisted venv on
-  # every pod start, so code updates are just "git pull, then restart the pod"
-  # — no image build/push step.
-  repository: python
-  tag: "3.12-slim"
-
-git:
-  repo: https://github.com/CServinL/prisma.git
-  branch: main
+  # Pre-built image: prisma's own Dockerfile + .github/workflows/build-image.yml
+  # build and push this on every push to main. Code and the compiled UI are
+  # both already baked in — updating means bumping `tag` here (to a newer
+  # pinned version, or "latest" to float) and rolling out, not a git
+  # pull/restart cycle.
+  repository: ghcr.io/cservinl/prisma
+  tag: "0.1.0"
 
 # Name of a single pre-created Secret (not managed by this chart) holding
 # every credential this deployment needs, one key each:
 #   - OPENROUTER_API_KEY (chat + KG extraction, ADR-014/2026-07-25 routing)
-#   - GH_TOKEN (authenticated git ops — prisma is public so this isn't
-#     required for clone/pull to work at all, but avoids unauthenticated
-#     rate limits across the LAN's several git-clone-based deployments)
 #   - ZOTERO_API_KEY / ZOTERO_LIBRARY_ID (both optional — referenced via
 #     config.toml's sources.zotero.api_key_env/library_id_env, 2026-07-27;
 #     Zotero integration just stays offline if either is absent from the
@@ -23,14 +17,15 @@ git:
 # e.g.:
 #   kubectl create secret generic prisma-secrets -n prisma \
 #     --from-literal=OPENROUTER_API_KEY=sk-or-... \
-#     --from-literal=GH_TOKEN=ghp_... \
 #     --from-literal=ZOTERO_API_KEY=... \
 #     --from-literal=ZOTERO_LIBRARY_ID=... # both optional
 secretsName: prisma-secrets
 
 persistence:
-  # Holds the cloned repo + venv (rebuilt fast if unchanged) + vault + config.
-  # Longhorn is plain/unencrypted here on purpose — vault encryption is a
+  # Holds vault + config + pending-writes queue (workingDir /data, see
+  # deployment.yaml) — no repo/venv anymore now that the image ships code
+  # pre-installed. Longhorn is plain/unencrypted here on purpose — vault
+  # encryption is a
   # deferred Prisma-side feature (gocryptfs + unlock-over-LAN), not solved at
   # the storage layer. See prisma's TODO.md "Deferred feature: vault unlock
   # over LAN instead of an at-rest key".

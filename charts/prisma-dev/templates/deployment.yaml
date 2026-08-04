@@ -14,93 +14,28 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
-      initContainers:
-        # Clone on first run, hard-reset to the remote branch tip on every
-        # subsequent pod (re)start — this is the "git pull to update" half
-        # of dev mode. `fetch` + `reset --hard`, not `git pull`: main gets
-        # force-pushed/rewritten from time to time (e.g. amending a commit
-        # message after merge), which leaves any pod cloned from the old
-        # history unable to fast-forward — a plain `git pull` errors out on
-        # exactly that, `reset --hard` never can (a dev-mode pod has no
-        # local commits of its own worth preserving). The other half of
-        # "actually picking up the change" is a pod restart, since the
-        # venv/import caches are process-local — see chart README.
-        - name: git-sync
-          image: alpine/git:latest
-          env:
-            - name: GH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secretsName }}
-                  key: GH_TOKEN
-          command:
-            - sh
-            - -c
-            - |
-              set -e
-              AUTH_URL="https://${GH_TOKEN}@$(echo {{ .Values.git.repo }} | sed 's#https://##')"
-              if [ -d /data/repo/.git ]; then
-                cd /data/repo && git remote set-url origin "$AUTH_URL" && git fetch origin {{ .Values.git.branch }} && git reset --hard origin/{{ .Values.git.branch }}
-              else
-                git clone --branch {{ .Values.git.branch }} "$AUTH_URL" /data/repo
-              fi
-          volumeMounts:
-            - name: data
-              mountPath: /data
-        - name: pip-install
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command:
-            - sh
-            - -c
-            - |
-              set -e
-              [ -d /data/venv ] || python -m venv /data/venv
-              /data/venv/bin/pip install -e "/data/repo[dev]"
-          volumeMounts:
-            - name: data
-              mountPath: /data
       containers:
         - name: prisma
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          # git isn't in python:3.12-slim by default — installed here (not
-          # baked into the venv/PVC, so this reruns every pod start, a few
-          # seconds' cost) specifically so a manual `kubectl exec ... git
-          # pull` works for an ad-hoc refresh without needing `kubectl
-          # debug`. The authenticated remote URL is set up the same way the
-          # git-sync initContainer does, so that manual pull doesn't hit
-          # unauthenticated rate limits either.
-          command:
-            - sh
-            - -c
-            - |
-              set -e
-              which git >/dev/null 2>&1 || (apt-get update -qq && apt-get install -y --no-install-recommends -qq git && rm -rf /var/lib/apt/lists/*)
-              git -C /data/repo remote set-url origin "https://${GH_TOKEN}@$(echo {{ .Values.git.repo }} | sed 's#https://##')" || true
-              # --host 127.0.0.1 (prisma serve's own default) only accepts
-              # connections from inside the same network namespace — fine
-              # for `kubectl exec`-based testing (same pod), but means the
-              # Service/Ingress could never actually reach it at all. Found
-              # live 2026-07-25 while setting up the Ingress: the pod
-              # itself was always healthy, kubectl exec + curl localhost
-              # always worked, but the Service's ClusterIP DNS name got
-              # "Connection refused" — nothing was listening on any
-              # externally-reachable interface.
-              exec /data/venv/bin/prisma serve --host 0.0.0.0
-          workingDir: /data/repo
+          # Pre-built image (see prisma's own Dockerfile + build-image.yml
+          # workflow) -- code and the compiled UI are already baked in, no
+          # git clone / pip install / npm build at pod start. The image's
+          # own CMD (`prisma serve --host 0.0.0.0`) runs as-is.
+          workingDir: /data
+          # `prisma.storage.pending_queue`'s default queue file is a
+          # CWD-relative "./data/pending_writes.json" -- workingDir /data
+          # (not the image's own /app) puts that on the persistent PVC
+          # instead of the ephemeral image filesystem, same as everything
+          # else stateful this pod owns.
           env:
             - name: HOME
               value: /data
-            - name: GH_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secretsName }}
-                  key: GH_TOKEN
             - name: OPENROUTER_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secretsName }}
                   key: OPENROUTER_API_KEY
-            # Optional -- unlike GH_TOKEN/OPENROUTER_API_KEY, Zotero
+            # Optional -- unlike OPENROUTER_API_KEY, Zotero
             # integration isn't required for this deployment to run at all,
             # so a Secret without these keys must not block pod startup.
             - name: ZOTERO_API_KEY
