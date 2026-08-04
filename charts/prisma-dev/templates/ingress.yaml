@@ -15,13 +15,24 @@ spec:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
-          # Routes to the "api" port (8765), not "ui" — the desktop/PWA
-          # client's own "Server URL" setting is the API's REST+WS base
-          # (see prisma-desktop's src/routes/+page.svelte apiBase/wsBase),
-          # and the Tauri shell always loads its UI assets from its own
-          # local Web process regardless of Server URL. A separate rule
-          # (or host) would be needed to also expose the "ui" port for a
-          # pure-browser/PWA client hitting this host directly.
+          # /app -> the "ui" port (8766, unauthenticated static shell, no
+          # AuthMiddleware -- see prisma/server/web_app.py). Needed so a
+          # Tauri shell (or a plain browser/PWA client) can load the UI
+          # directly from this server instead of only ever from a local
+          # `prisma serve` process. Listed before the catch-all below;
+          # Prefix pathType matches longest-prefix regardless of rule
+          # order, but keeping the more specific rule first for clarity.
+          - path: /app
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}
+                port:
+                  name: ui
+          # Everything else -> the "api" port (8765), AuthMiddleware and
+          # all -- the desktop/PWA client's own "Server URL" setting is
+          # the API's REST+WS base (see prisma-desktop's
+          # src/routes/+page.svelte apiBase/wsBase).
           - path: /
             pathType: Prefix
             backend:
