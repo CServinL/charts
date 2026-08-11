@@ -3,15 +3,22 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}
 spec:
+  type: {{ .Values.service.type | default "ClusterIP" }}
   selector:
     app: {{ .Release.Name }}
   ports:
     - name: api
       port: {{ .Values.service.apiPort }}
       targetPort: api
+      {{- if eq (.Values.service.type | default "ClusterIP") "NodePort" }}
+      nodePort: {{ .Values.service.apiNodePort }}
+      {{- end }}
     - name: ui
       port: {{ .Values.service.uiPort }}
       targetPort: ui
+      {{- if eq (.Values.service.type | default "ClusterIP") "NodePort" }}
+      nodePort: {{ .Values.service.uiNodePort }}
+      {{- end }}
     - name: chroma
       port: {{ .Values.service.chromaPort }}
       targetPort: chroma

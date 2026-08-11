@@ -44,6 +44,16 @@ service:
   apiPort: 8765
   uiPort: 8766
   chromaPort: 8767
+  # NodePort (2026-08-11): prisma-desktop's Settings model has separate
+  # hostname:api_port and hostname:web_port, both used directly (window.rs's
+  # resolve_start_url navigates to web_url() itself, not a hardcoded local
+  # URL) -- both need a real network path to this deployment from the LAN,
+  # not just the API. K8s NodePort range on this cluster is the unmodified
+  # default (30000-32767), so 8765/8766 themselves aren't valid nodePort
+  # values -- these are the closest memorable equivalents.
+  type: NodePort
+  apiNodePort: 30765
+  uiNodePort: 30766
 
 openrouter:
   # Cheap model by default — swap once you've picked one deliberately (see
