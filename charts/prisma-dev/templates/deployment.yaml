@@ -50,6 +50,14 @@ spec:
                   name: {{ .Values.secretsName }}
                   key: ZOTERO_LIBRARY_ID
                   optional: true
+            # The UI's own origin (see service.yaml's NodePort setup) so the
+            # api process's CORS allows requests from the page the web
+            # process serves -- without this, prisma-desktop's dual
+            # api_port/web_port model (both pointed at this same host) hits
+            # the api process cross-origin from the browser's perspective
+            # and every fetch gets silently blocked client-side.
+            - name: PRISMA_CORS_EXTRA_ORIGINS
+              value: "http://{{ .Values.ingress.host }}:{{ .Values.service.uiNodePort }}"
           ports:
             - name: api
               containerPort: {{ .Values.service.apiPort }}
