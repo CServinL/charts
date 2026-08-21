@@ -96,6 +96,18 @@ data:
     name = "{{ .Values.openrouter.kgModel }}"
     {{- end }}
 
+    # Local pool for the embedding model -- without this, ResourceManager's
+    # model-not-found fallback (supervisor.py's _candidate_pools) routes
+    # embedding requests through every configured pool, including
+    # openrouter's cloud-sized max_concurrent against this single local GPU.
+    [[compute_pools]]
+    name = "local-embeddings"
+    provider = "llama_cpp"
+    max_concurrent = {{ .Values.retrieval.maxConcurrent }}
+
+    [[compute_pools.models]]
+    name = "{{ .Values.retrieval.embeddingModel }}"
+
     [output]
     directory = "./outputs"
     format = "markdown"

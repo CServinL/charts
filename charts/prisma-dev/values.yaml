@@ -78,6 +78,12 @@ openrouter:
 retrieval:
   embeddingModel: "bge-m3"
   baseUrl: "http://llama-server.default.svc.cluster.local:8090"
+  # Caps concurrent embedding calls against the single local GPU backing
+  # this model -- without a compute_pools entry declaring embeddingModel,
+  # ResourceManager's model-not-found fallback routes it through every
+  # other configured pool, including the cloud one's much higher
+  # max_concurrent meant for a remote API with no local hardware limit.
+  maxConcurrent: 2
 
 # ADR-011 password-mode auth — forge is reachable over the LAN (that's the
 # whole point of desktop vault-sync), so this should not stay "none" once
