@@ -107,6 +107,9 @@ data:
 
     [[compute_pools.models]]
     name = "{{ .Values.retrieval.embeddingModel }}"
+    {{- if .Values.retrieval.backgroundMaxConcurrent }}
+    background_max_concurrent = {{ .Values.retrieval.backgroundMaxConcurrent }}
+    {{- end }}
 
     [output]
     directory = "./outputs"

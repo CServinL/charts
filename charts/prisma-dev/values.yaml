@@ -84,6 +84,18 @@ retrieval:
   # other configured pool, including the cloud one's much higher
   # max_concurrent meant for a remote API with no local hardware limit.
   maxConcurrent: 2
+  # Reserves this many of maxConcurrent's slots for live chat calls
+  # (SEARCH_VAULT/RECALL, priority="interactive") so the background
+  # indexer's own embedding work (ChromaIndexer, priority="background")
+  # can never fill every slot and starve a chat turn -- confirmed live
+  # 2026-08-27: the same SEARCH_VAULT query returned real results one run
+  # and an empty list moments later, with the indexer's background
+  # activity as the only thing that changed, not a relevance difference.
+  # Prisma's ResourceManager.acquire() already caps background-priority
+  # leases below this reservation; leave unset (0) to disable the
+  # reservation entirely (background_max_concurrent is omitted from
+  # config.toml, matching pre-existing behavior).
+  backgroundMaxConcurrent: 1
 
 # ADR-011 password-mode auth — forge is reachable over the LAN (that's the
 # whole point of desktop vault-sync), so this should not stay "none" once
