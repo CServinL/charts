@@ -13,6 +13,12 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+      annotations:
+        # ConfigMap is mounted via subPath, which kubelet doesn't watch for
+        # changes -- without this, a config-only `helm upgrade` (no image
+        # tag bump) applies the new ConfigMap but the running pod keeps
+        # serving the old config.toml until something else restarts it.
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       # Default ndots:5 makes every lookup of a <2-dot external host (e.g.
       # api.zotero.org) try 3 doomed *.svc.cluster.local search-domain
